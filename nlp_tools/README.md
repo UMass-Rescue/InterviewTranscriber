@@ -2,6 +2,8 @@ To run with docker, use the commands:
 docker build -t nlp-tools:latest .
 docker run -p 8000:8000 nlp-tools
 
+Note that this model may take around 15 minutes to load. 
+
 You can send requests to http://0.0.0.0:8000/analyzeText with the body:
 
 {

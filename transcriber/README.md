@@ -9,6 +9,8 @@ To run with docker, use the commands:
 docker build -t transcriber:latest .
 docker run -p 8000:8000 transcriber
 
+Note that this model may take around 10 minutes to load.
+
 You can send requests to http://0.0.0.0:8000/sendTranscription with the body:
 
 {

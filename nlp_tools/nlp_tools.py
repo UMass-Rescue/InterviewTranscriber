@@ -69,6 +69,7 @@ class NLP_Tools:
             list_indices.append(self.find_question_index(text, question))
         return list_indices
 
+
     def get_question_answers(self, text, question_index, list_of_questions):
         if question_index not in list_of_questions:
             raise InvalidQuestionError('An invalid question index was specified when trying to find corresponding answers.')
@@ -79,10 +80,16 @@ class NLP_Tools:
             answer_index += 1
         return answer_sentences
 
+    #find the answer and then find the corresponding named entity recognized objects
     def get_list_answer_indices(self, text, list_of_questions_indices):
         list_indices = []
         for question in list_of_questions_indices:
-            list_indices.append(self.get_question_answers(text, question, list_of_questions_indices))
+            answer = self.get_question_answers(text, question, list_of_questions_indices)
+            ner = self.get_ner(answer)
+            answer_ner = {}
+            answer_ner["answer"] = answer
+            answer_ner["ner"] = ner
+            list_indices.append(answer_ner)
         return list_indices
 
     def get_questions_and_answers(self, text, questions):

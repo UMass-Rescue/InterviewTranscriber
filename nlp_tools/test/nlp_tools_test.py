@@ -1,5 +1,5 @@
 import unittest
-from nlp_tools import NLP_Tools, InvalidQuestionError
+from nlp_tools.nlp_tools import NLP_Tools, InvalidQuestionError
 
 class nlp_tools_test(unittest.TestCase):
 

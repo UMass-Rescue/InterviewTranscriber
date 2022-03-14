@@ -18,4 +18,5 @@ To activate the server:
 - Install dependencies using 'pip install -r requirements.txt'.
 - Start server by running 'python3 server.py' from the root directory.
 
-for spacy, run python3 -m spacy download en_core_web_trf
+To run with Docker:
+- Ensure that your Docker settings specify that that container size can be 8 GB. 

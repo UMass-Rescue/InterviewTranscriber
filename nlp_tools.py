@@ -1,6 +1,9 @@
 from nnsplit import NNSplit
 from punctuator import Punctuator
 import spacy
+import os
+import logging
+import gdown
 
 from sentence_transformers import SentenceTransformer, util
 
@@ -8,6 +11,18 @@ from sentence_transformers import SentenceTransformer, util
 class InvalidQuestionError(Exception):
     pass
 
+def download_punctuator_model():
+    PUNCTUATOR_DATA_DIR = os.path.expanduser(os.environ.get('PUNCTUATOR_DATA_DIR', '~/.punctuator'))
+    _cwd = os.getcwd()
+    try:
+        os.makedirs(PUNCTUATOR_DATA_DIR, exist_ok=True)
+        os.chdir(PUNCTUATOR_DATA_DIR)
+        logging.info('Downloading ...')
+        fn = gdown.download(url=f'https://drive.google.com/uc?id=19iQzEl274dS7s_1-exZuxezRH2N_rQBN&confirm=t', output=None, quiet=False)
+        #https://drive.google.com/uc?id=0B7BsN5f2F1fZd1Q0aXlrUDhDbnM&confirm=t
+        return os.path.join(PUNCTUATOR_DATA_DIR, fn)
+    finally:
+        os.chdir(_cwd)
 
 class NLP_Tools:
 
@@ -18,6 +33,7 @@ class NLP_Tools:
           model : model for the sentence transformer
         """
 
+        download_punctuator_model()
         self.punctuator = Punctuator(punct_language)
         self.splitter = NNSplit.load('en')
         self.model = SentenceTransformer(sent_model)
@@ -56,10 +72,10 @@ class NLP_Tools:
     def get_question_answers(self, text, question_index, list_of_questions):
         if question_index not in list_of_questions:
             raise InvalidQuestionError('An invalid question index was specified when trying to find corresponding answers.')
-        answer_sentences = []
+        answer_sentences = ''
         answer_index = question_index + 1
         while answer_index not in list_of_questions and answer_index < len(text):
-            answer_sentences.append(text[answer_index])
+            answer_sentences += text[answer_index]
             answer_index += 1
         return answer_sentences
 

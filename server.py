@@ -21,10 +21,8 @@ def return_route():
     request_json = json.loads(request_str)
     audio_filename = request_json['audio_filename'] #use "audio/Casual_English_Conversation.mp3"
 
-    # To download the model
-    # curl -LO http://alphacephei.com/vosk/models/vosk-model-en-us-0.22.zip
-    # and unzip the file
-    model_path = "model/vosk-model-en-us-0.22"
+    model_path = "/opt/vosk-model-en/model"
+    #model_path = '/Users/colettebasiliere/Desktop/vosk-model-en-us-0.22' # for local testing
     audio_filename = "audio/M_0399_12y4m_1.wav" #can comment out this line when testing complete
 
     transcriber = Transcriber(model_path)
@@ -46,7 +44,7 @@ def return_route2():
     #     "questions" : ["Question1", "Question 2"]
     # }
 
-    punct_model = 'Demo-Europarl-EN.pcl'
+    punct_model = '1Demo-Europarl-EN.pcl'
     sentence_model = 'all-MiniLM-L6-v2'
     nlp_tool = NLP_Tools(punct_model, sentence_model)
 
@@ -69,4 +67,4 @@ def return_route2():
 # to run the server, just run python server.py
 if __name__ == '__main__':
     print("Starting the server...")
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True,port='8000')

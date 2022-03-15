@@ -22,7 +22,7 @@ def return_route():
 
     request_str = request.data.decode('utf-8')
     request_json = json.loads(request_str)
-    audio_filename = request_json['audio_filename'] #use "audio/Casual_English_Conversation.mp3"
+    text = request_json['full_text'] #use "audio/Casual_English_Conversation.mp3"
     interview_questions = request_json['questions'] #use ['you need casual english', 'you want to talk to your coworkers ']
 
     #in future, will pull transcribed text from database

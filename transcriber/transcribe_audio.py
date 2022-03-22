@@ -3,6 +3,7 @@ from pydub import AudioSegment
 from vosk import Model, KaldiRecognizer
 import wave
 import audioop
+import gdown
 
 class Transcriber:
 
@@ -48,9 +49,14 @@ class Transcriber:
         return monoWav
 
     def transcribe(self, audio_filename):
-        if audio_filename.__contains__("mp3"):
-            audio_filename = self.mp3_to_wav(audio_filename)
-        wf = wave.open(audio_filename, "rb")
+        id = "1Zjs11fFF3vIjkRyPBhvoijEDa_ZV5l9o"
+        audio_file = gdown.download(id=id, output=None, quiet=False)
+
+        #if mp3 files are going to be used, uncomment these lines
+        #if audio_filename.__contains__("mp3"):
+            #audio_filename = self.mp3_to_wav(audio_filename)
+
+        wf = wave.open(audio_file, "rb")
 
         rec = KaldiRecognizer(self.model, wf.getframerate())
         rec.SetWords(True)

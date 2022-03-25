@@ -39,6 +39,7 @@ class NLP_Tools:
         self.model = SentenceTransformer(sent_model)
         self.nlp = spacy.load('en_core_web_lg')
 
+    #from raw text, create sentences with capitalization and punctuation
     def sentence_segment(self, text):
         split = self.punctuator.punctuate(text)
         split = self.splitter.split([split])[0]
@@ -48,6 +49,7 @@ class NLP_Tools:
             sentences.append(str(sentence))
         return sentences
 
+    #based on the input question, find the index in the text
     def find_question_index(self, text, question):
         embedded_sentences = self.model.encode(text, convert_to_tensor=True)
         embedded_question = self.model.encode(question, convert_to_tensor=True)
@@ -63,13 +65,15 @@ class NLP_Tools:
 
         return(index)
 
+    #get list of all question indices
     def get_list_question_indices(self, text, questions):
         list_indices = []
         for question in questions:
             list_indices.append(self.find_question_index(text, question))
         return list_indices
 
-
+    #Based on the question indices, find the answers
+    #Answers are defined as all sentences in between two questions
     def get_question_answers(self, text, question_index, list_of_questions):
         if question_index not in list_of_questions:
             raise InvalidQuestionError('An invalid question index was specified when trying to find corresponding answers.')
@@ -92,6 +96,7 @@ class NLP_Tools:
             list_indices.append(answer_ner)
         return list_indices
 
+    #from text, find all questions and associated answers
     def get_questions_and_answers(self, text, questions):
         sentences = self.sentence_segment(text)
         question_indices = self.get_list_question_indices(sentences, questions)
@@ -104,6 +109,7 @@ class NLP_Tools:
             q_and_a.append(q_and_a_pair)
         return q_and_a
 
+    #get named entity recognition objects with their label and index in the sentence
     def get_ner(self, text):
         doc = self.nlp(text)
         ners = []

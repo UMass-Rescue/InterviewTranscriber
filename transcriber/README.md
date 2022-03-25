@@ -1,4 +1,4 @@
-This repo is currently trancsriber audio file stored locally in a folder /audio. 
+This repo transcribes audio files located in the 596e-backend Azure.
 There are a number of good wav files you can place in this folder for testing located here:
 https://www.uclass.psychol.ucl.ac.uk/Release2/Conversation/AudioOnly/wav/
 . Update line 25 in server.py with the name of the file to see the transcription. 
@@ -14,7 +14,7 @@ Note that this model may take around 10 minutes to load.
 You can send requests to http://0.0.0.0:8000/sendTranscription with the body:
 
 {
-"audio_filename": "File1"
+"audio_filename": "short_test_audio"
 }
 
 To run the server locally:

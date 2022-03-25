@@ -2,10 +2,6 @@ FROM python:3.9
 
 WORKDIR /usr/src/app
 
-COPY requirements.txt .
-
-RUN pip install -r requirements.txt
-
 ENV MODEL_VERSION 0.22
 RUN mkdir /opt/vosk-model-en \
    && cd /opt/vosk-model-en \
@@ -14,9 +10,12 @@ RUN mkdir /opt/vosk-model-en \
    && mv vosk-model-en-us-${MODEL_VERSION} model \
    && rm -rf vosk-model-en-us-${MODEL_VERSION}.zip
 
-#this is needed if we need to convert mps to wav
-#FROM katalonstudio/katalon
-#RUN apt-get install -y ffmpeg
+RUN apt-get -y update
+RUN apt-get --yes install libsndfile1
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
 
 WORKDIR /usr/src/app
 

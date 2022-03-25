@@ -1,11 +1,14 @@
 import json
-from pydub import AudioSegment
+import os
 from vosk import Model, KaldiRecognizer
 import wave
-import audioop
-import gdown
+from azure.storage.blob import BlobClient
 
 class Transcriber:
+
+    blob_account_url=""
+    blob_credential=""
+    blob_container=""
 
     def __init__(self, model_path):
         """
@@ -15,46 +18,23 @@ class Transcriber:
         """
         self.model = Model(model_path)
 
-    # download required:  brew install ffmpeg
-    def mp3_to_wav(self, source):
-        stereoWav = source[0:len(source)-4] + "_stereo.wav"
-        monoWav = source[0:len(source)-4] + "_mono.wav"
-        # convert mp3 to wav
-        sound = AudioSegment.from_mp3(source)
-        sound.export(stereoWav, format="wav")
-
-        # read input file and write mono output file
-        try:
-            # open the input and output files
-            inFile = wave.open(stereoWav,'rb')
-            outFile = wave.open(monoWav,'wb')
-            # force mono
-            outFile.setnchannels(1)
-            # set output file like the input file
-            outFile.setsampwidth(inFile.getsampwidth())
-            outFile.setframerate(inFile.getframerate())
-            # read
-            soundBytes = inFile.readframes(inFile.getnframes())
-            print("frames read: {} length: {}".format(inFile.getnframes(),len(soundBytes)))
-            # convert to mono and write file
-            monoSoundBytes = audioop.tomono(soundBytes, inFile.getsampwidth(), 1, 1)
-            outFile.writeframes(monoSoundBytes)
-
-        except Exception as e:
-            print(e)
-
-        finally:
-            inFile.close()
-            outFile.close()
-        return monoWav
+    #get the blob wav file and save it locally
+    def read_blob(self, blob_key: str):
+        blob = BlobClient(
+            account_url=self.blob_account_url,
+            container_name=self.blob_container,
+            blob_name=blob_key,
+            credential=self.blob_credential,
+        )
+        file_name = blob_key+'.wav'
+        with open(file_name, "wb") as my_blob:
+            download_stream = blob.download_blob()
+            my_blob.write(download_stream.readall())
+        return file_name
 
     def transcribe(self, audio_filename):
-        id = "1Zjs11fFF3vIjkRyPBhvoijEDa_ZV5l9o"
-        audio_file = gdown.download(id=id, output=None, quiet=False)
 
-        #if mp3 files are going to be used, uncomment these lines
-        #if audio_filename.__contains__("mp3"):
-            #audio_filename = self.mp3_to_wav(audio_filename)
+        audio_file = self.read_blob(audio_filename)
 
         wf = wave.open(audio_file, "rb")
 
@@ -81,5 +61,8 @@ class Transcriber:
 
         wf.close()  # close audiofile
 
-        return text
+        #delete local wav file created for this function
+        if os.path.exists(audio_file):
+            os.remove(audio_file)
 
+        return text

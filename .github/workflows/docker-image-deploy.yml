@@ -15,6 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Build nlp-tools container image
+        id: build-nlp-tools
         uses: docker/build-push-action@v2
         with:
           username: ${{github.actor}}
@@ -25,12 +26,13 @@ jobs:
           context: ./nlp-tools/
           dockerfile: ./nlp-tools/Dockerfile
       - name: Build transcriber container image
-          uses: docker/build-push-action@v2
-          with:
-            username: ${{github.actor}}
-            password: ${{secrets.GITHUB_TOKEN}}
-            registry: docker.pkg.github.com
-            repository: umass-rescue/interview-transcriber/transcriber
-            tags: latest
-            context: ./transcriber/
-            dockerfile: ./transcriber/Dockerfile
+        id: build-transcriber
+        uses: docker/build-push-action@v2
+        with:
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+          registry: docker.pkg.github.com
+          repository: umass-rescue/interview-transcriber/transcriber
+          tags: latest
+          context: ./transcriber/
+          dockerfile: ./transcriber/Dockerfile

@@ -20,5 +20,5 @@ jobs:
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
           registry: docker.pkg.github.com
-          repository: umass-rescue/InterviewTranscriber/nlp_tools/nlp-tools
+          repository: umass-rescue/interview-transcriber/nlp-tools/nlp-tools
           tags: latest

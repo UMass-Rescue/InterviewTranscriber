@@ -3,13 +3,31 @@ from punctuator import Punctuator
 import spacy
 import os
 import logging
-import gdown
-
+from azure.storage.blob import BlobClient
 from sentence_transformers import SentenceTransformer, util
 
 
 class InvalidQuestionError(Exception):
     pass
+
+#get the blob model file and save it the punctuator directory
+def write_blob(blob_key: str, file_path: str):
+
+    blob_account_url=""
+    blob_credential=""
+    blob_container=""
+
+    blob = BlobClient(
+        account_url=blob_account_url,
+        container_name=blob_container,
+        blob_name=blob_key,
+        credential=blob_credential,
+    )
+    location = file_path + '/' + blob_key
+    with open(location, "wb") as my_blob:
+        download_stream = blob.download_blob()
+        my_blob.write(download_stream.readall())
+    return location
 
 def download_punctuator_model():
     PUNCTUATOR_DATA_DIR = os.path.expanduser(os.environ.get('PUNCTUATOR_DATA_DIR', '~/.punctuator'))
@@ -18,9 +36,7 @@ def download_punctuator_model():
         os.makedirs(PUNCTUATOR_DATA_DIR, exist_ok=True)
         os.chdir(PUNCTUATOR_DATA_DIR)
         logging.info('Downloading ...')
-        fn = gdown.download(url=f'https://drive.google.com/uc?id=19iQzEl274dS7s_1-exZuxezRH2N_rQBN&confirm=t', output=None, quiet=False)
-        #https://drive.google.com/uc?id=0B7BsN5f2F1fZd1Q0aXlrUDhDbnM&confirm=t
-        return os.path.join(PUNCTUATOR_DATA_DIR, fn)
+        write_blob("Demo-Europarl-EN.pcl", PUNCTUATOR_DATA_DIR)
     finally:
         os.chdir(_cwd)
 
@@ -32,7 +48,6 @@ class NLP_Tools:
           language : the language for the sentence segmenter
           model : model for the sentence transformer
         """
-
         download_punctuator_model()
         self.punctuator = Punctuator(punct_language)
         self.splitter = NNSplit.load('en')
@@ -119,5 +134,4 @@ class NLP_Tools:
             ner['start_index'] = ent.start_char
             ner['end_index'] = ent.end_char
             ners.append(ner)
-            #print(ent.text, ent.start_char-ent.sent.start_char, ent.end_char-ent.sent.start_char, ent.label_)
         return ners

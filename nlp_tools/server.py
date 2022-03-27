@@ -16,7 +16,7 @@ CORS(app)
 def return_route():
 
     #download the models
-    punct_model = '1Demo-Europarl-EN.pcl'
+    punct_model = 'Demo-Europarl-EN.pcl'
     sentence_model = 'all-MiniLM-L6-v2'
     nlp_tool = NLP_Tools(punct_model, sentence_model)
 

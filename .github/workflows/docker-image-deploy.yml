@@ -1,4 +1,4 @@
-name: NLP Tools Docker Image CD
+name: Interview Transcriber Docker Image CD
 
 on:
   push:
@@ -14,13 +14,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-      - name: Build container image
+      - name: Build nlp-tools container image
         uses: docker/build-push-action@v2
         with:
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
           registry: docker.pkg.github.com
-          repository: umass-rescue/interview-transcriber/nlp-tools/nlp-tools
+          repository: umass-rescue/interview-transcriber/nlp-tools
           tags: latest
           context: ./nlp-tools/
           dockerfile: ./nlp-tools/Dockerfile
+      - name: Build transcriber container image
+          uses: docker/build-push-action@v2
+          with:
+            username: ${{github.actor}}
+            password: ${{secrets.GITHUB_TOKEN}}
+            registry: docker.pkg.github.com
+            repository: umass-rescue/interview-transcriber/transcriber
+            tags: latest
+            context: ./transcriber/
+            dockerfile: ./transcriber/Dockerfile

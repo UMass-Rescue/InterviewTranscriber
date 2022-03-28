@@ -6,9 +6,11 @@ from azure.storage.blob import BlobClient
 
 class Transcriber:
 
-    blob_account_url=""
-    blob_credential=""
-    blob_container=""
+    blob_account_url = os.getenv("BLOB_ACCOUNT_URL")
+    blob_credential = os.getenv("BLOB_CREDENTIAL")
+    blob_container = os.getenv("BLOB_CONTAINER")
+    nlp_tools_hostname = os.getenv("NLP_TOOLS_HOSTNAME", "worker_example")
+    nlp_tools_port = os.getenv("NLP_TOOLS_PORT", "8001")
 
     def __init__(self, model_path):
         """

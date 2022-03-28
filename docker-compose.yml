@@ -1,0 +1,21 @@
+x-environment_file: &environment_file
+  env_file:
+    - ".env"
+
+services:
+  transcriber_server:
+    container_name: transcriber_server
+    build:
+      context: transcriber/
+      dockerfile: Dockerfile
+    <<: *environment_file
+    ports:
+      - "8000:8000"
+  nlp_tools:
+    container_name: nlp_tools
+    <<: *environment_file
+    build:
+      context: nlp-tools/
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"

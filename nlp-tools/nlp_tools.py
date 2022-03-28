@@ -13,9 +13,9 @@ class InvalidQuestionError(Exception):
 #get the blob model file and save it the punctuator directory
 def write_blob(blob_key: str, file_path: str):
 
-    blob_account_url=""
-    blob_credential=""
-    blob_container=""
+    blob_account_url = os.getenv("BLOB_ACCOUNT_URL")
+    blob_credential = os.getenv("BLOB_CREDENTIAL")
+    blob_container = os.getenv("BLOB_CONTAINER")
 
     blob = BlobClient(
         account_url=blob_account_url,

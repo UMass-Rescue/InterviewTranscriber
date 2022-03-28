@@ -25,6 +25,7 @@ jobs:
           tags: latest
           context: ./nlp-tools/
           dockerfile: ./nlp-tools/Dockerfile
+          push: true
       - name: Build transcriber container image
         id: build-transcriber
         uses: docker/build-push-action@v2
@@ -36,3 +37,4 @@ jobs:
           tags: latest
           context: ./transcriber/
           dockerfile: ./transcriber/Dockerfile
+          push: true

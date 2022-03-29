@@ -2,8 +2,6 @@ numpy==1.20.3
 nnsplit==0.5.8.post0
 sentence-transformers==2.2.0
 punctuator==0.9.6
-Cython==0.29.28
-Flask==2.0.2
-Flask-Cors==3.0.10
-spacy==3.2.0
 azure-storage-blob
+FastApi==0.75.0
+uvicorn==0.17.6

@@ -37,7 +37,7 @@ async def return_route(request: Request):
 
     # return the question and answer pairs
     to_return = {"transcription": q_and_a}
-    print(to_return)
+    print(json.dumps(to_return))
     return json.dumps(to_return)
 
 # to run the server, just run python server.py

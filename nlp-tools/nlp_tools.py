@@ -126,6 +126,8 @@ class NLP_Tools:
 
     #get named entity recognition objects with their label and index in the sentence
     def get_ner(self, text):
+        if len(text) == 0:
+            return []
         doc = self.nlp(text)
         ners = []
         for ent in doc.ents:

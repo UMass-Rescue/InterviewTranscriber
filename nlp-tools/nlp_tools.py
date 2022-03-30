@@ -1,3 +1,4 @@
+from typing import List
 from nnsplit import NNSplit
 from punctuator import Punctuator
 import spacy
@@ -5,6 +6,7 @@ import os
 import logging
 from azure.storage.blob import BlobClient
 from sentence_transformers import SentenceTransformer, util
+import schemas
 
 
 class InvalidQuestionError(Exception):
@@ -58,7 +60,6 @@ class NLP_Tools:
     def sentence_segment(self, text):
         split = self.punctuator.punctuate(text)
         split = self.splitter.split([split])[0]
-        print(split)
         sentences = []
         for sentence in split:
             sentences.append(str(sentence))
@@ -68,7 +69,7 @@ class NLP_Tools:
     def find_question_index(self, text, question):
         embedded_sentences = self.model.encode(text, convert_to_tensor=True)
         embedded_question = self.model.encode(question, convert_to_tensor=True)
-        #Compute cosine-similarits
+        #Compute cosine-similarities
         cosine_scores = util.cos_sim(embedded_sentences, embedded_question)
         #find index of the matching sentence:
         index = -1
@@ -84,7 +85,7 @@ class NLP_Tools:
     def get_list_question_indices(self, text, questions):
         list_indices = []
         for question in questions:
-            list_indices.append(self.find_question_index(text, question))
+            list_indices.append(self.find_question_index(text, question.text))
         return list_indices
 
     #Based on the question indices, find the answers
@@ -112,15 +113,17 @@ class NLP_Tools:
         return list_indices
 
     #from text, find all questions and associated answers
-    def get_questions_and_answers(self, text, questions):
+    def get_questions_and_answers(self, text:str, questions:List[schemas.Question]):
         sentences = self.sentence_segment(text)
         question_indices = self.get_list_question_indices(sentences, questions)
         answer_lists = self.get_list_answer_indices(sentences, question_indices)
         q_and_a = []
         for i in range(len(question_indices)):
-            q_and_a_pair = {}
-            q_and_a_pair['question'] = sentences[question_indices[i]]
-            q_and_a_pair['answer'] = answer_lists[i]
+            q_and_a_pair = schemas.CreateInterviewAnswer(question_id=questions[i].id,
+                                                         answer=answer_lists[i]['answer'],
+                                                         interview_answer_ners=answer_lists[i]['ner'])
+            #TODO: Will be used in the future for actual_question_asked
+            #q_and_a_pair['question'] = sentences[question_indices[i]]
             q_and_a.append(q_and_a_pair)
         return q_and_a
 
@@ -131,9 +134,8 @@ class NLP_Tools:
         doc = self.nlp(text)
         ners = []
         for ent in doc.ents:
-            ner = {}
-            ner['label'] = ent.label_
-            ner['start_index'] = ent.start_char
-            ner['end_index'] = ent.end_char
+            ner = schemas.CreateInterviewAnswerNER(label = ent.label_,
+                                                   start_index=ent.start_char,
+                                                   end_index=ent.end_char)
             ners.append(ner)
         return ners

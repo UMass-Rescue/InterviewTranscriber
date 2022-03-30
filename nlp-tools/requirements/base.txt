@@ -5,3 +5,4 @@ punctuator==0.9.6
 azure-storage-blob
 FastApi==0.75.0
 uvicorn==0.17.6
+pydantic==1.9.0

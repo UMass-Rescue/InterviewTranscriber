@@ -1,7 +1,10 @@
 import json
+from typing import List
+
 from fastapi import Request, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from nlp_tools import NLP_Tools
+import schemas
 
 app = FastAPI()
 
@@ -22,11 +25,10 @@ app.add_middleware(
 #     "questions" : ["Slide the box into that empty space.", "She danced like a swan tall and graceful."]
 # }
 @app.post('/analyzeText')
-async def return_route(request: Request):
+async def analyze_text(analyzer_data: schemas.analyzerObj):
     # get the request
-    request_json = await request.json()
-    text = request_json['full_text']
-    interview_questions = request_json['questions']
+    text = analyzer_data.full_text
+    interview_questions = analyzer_data.questions
 
     #download the models
     punct_model = 'Demo-Europarl-EN.pcl'
@@ -34,11 +36,9 @@ async def return_route(request: Request):
     nlp_tool = NLP_Tools(punct_model, sentence_model)
 
     q_and_a = nlp_tool.get_questions_and_answers(text, interview_questions)
-
+    print(q_and_a)
     # return the question and answer pairs
-    to_return = {"transcription": q_and_a}
-    print(json.dumps(to_return))
-    return json.dumps(to_return)
+    return q_and_a
 
 # to run the server, just run python server.py
 if __name__ == '__main__':

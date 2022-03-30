@@ -51,8 +51,8 @@ def analyze(text: str, questions: List[schemas.Question], interview_object: sche
     print(createInterview)
     interview_id = interview_object.id
 
-    backend_hostname = os.getenv("BACKEND_HOSTNAME", "backend_hostname")
-    backend_port = os.getenv("BACKEND_HOSTNAME", "backend_port")
+    backend_hostname = os.getenv("BACKEND_HOSTNAME", "backend")
+    backend_port = os.getenv("BACKEND_PORT", "8000")
 
     # Will be a post request to the backend to save the transcription in the db
     response = requests.post(

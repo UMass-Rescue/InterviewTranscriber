@@ -49,15 +49,20 @@ def analyze(text: str, questions: List[schemas.Question], interview_object: sche
                                                           address=interview_object.address,
                                                           interview_answers=interview_answers)
     print(createInterview)
-    # # Will be a post request to the backend to save the transcription in the db
-    # response = requests.post(
-    #     f"http://{backend_hostname}:{backend_port}/transcribed_text/",
-    #     json = createInterview.dict()
-    # )
+    interview_id = interview_object.id
+
+    backend_hostname = os.getenv("BACKEND_HOSTNAME", "backend_hostname")
+    backend_port = os.getenv("BACKEND_HOSTNAME", "backend_port")
+
+    # Will be a post request to the backend to save the transcription in the db
+    response = requests.post(
+        f"http://{backend_hostname}:{backend_port}/interviews/{interview_id}/data",
+        json = createInterview.dict()
+    )
 
 
-# route : http://127.0.0.1:5000/sendTranscription
-# Expected post json:
+# route : http://0.0.0.0:8003/sendTranscription
+# Expected post body json:
 # {
 #     "blob": {"id":1, "key":"short_test_audio", "file_type": "str","description": "str","case_id": 1},
 #     "questions" : [{"id":1, "text": "Slide the box into that empty space.", "case_id":1}, {"id":2,"text":"She danced like a swan tall and graceful.", "case_id":1}],
@@ -79,4 +84,4 @@ if __name__ == '__main__':
     print("Starting the server...")
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8002)

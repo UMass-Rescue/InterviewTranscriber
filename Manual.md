@@ -23,7 +23,7 @@ times or places within the answer.
 The service then returns this analysis as a json to the backend server to save it to the database.
 
 
-##Tech Stack
+## Tech Stack
 This service is run with FastAPI and utilizes a back end built for the UMass Rescue Lab.
 Azure is used for file storage. Additional packages are used to complete tasks in each service.
 

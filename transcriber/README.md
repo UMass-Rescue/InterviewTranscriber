@@ -13,13 +13,15 @@ use the docker-compose file in the root directory of this project.
 Note that this model may take around 10 minutes to load.
 
 To run with docker for debugging purposes, use the commands:
+```
 docker build -t transcriber:latest .
 docker run -p 8000:8000 transcriber
-
+```
 To debug this repo, comment out line 27 in server.py to prevent the call to nlp-tools. 
 You can send requests to http://0.0.0.0:8000/sendTranscription with the body:
-
+```
 {
     "audio_filename": "short_test_audio"
     "questions" : ["Slide the box into that empty space.", "She danced like a swan tall and graceful."]
 }
+```

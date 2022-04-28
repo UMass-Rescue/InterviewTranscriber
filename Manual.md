@@ -85,6 +85,7 @@ https://luxuriant-save-c5e.notion.site/Setting-Up-Backend-Docker-Container-dd2ce
 Note that if you want the service to write results to the database, metadata will need to be added to the database 
 before the transcription begins. These objects include:
 
+* Case
 * Blob
 * Question
 
@@ -96,8 +97,9 @@ If you do not include these object, you will be able to see the results in the c
 Requests can then be made to the server using any API interface you prefer, we recommend Postman. 
 
 
-At this time, you can send requests to the backend to add objects to the database if you choose. To create a Blob,
-use http://0.0.0.0:8002/{case}/blob with the body:
+At this time, you can send requests to the backend to add objects to the database if you choose. To create the case, post to http://0.0.0.0:8000/cases/ with no body. 
+
+To create a Blob,post to http://0.0.0.0:8000/{case}/blobs with the body:
 ```
 {
 "key": {str},
@@ -105,7 +107,7 @@ use http://0.0.0.0:8002/{case}/blob with the body:
 "description": {str},
 }
 ```
-To create a Questions, use http://0.0.0.0:8002/{case}/blob with the body:
+To create a Questions, post to http://0.0.0.0:8000/{case}/questions with the body:
 ```
 {
 "text": {str}
@@ -123,8 +125,8 @@ to http://0.0.0.0:8002/sendTranscription with the body:
 ```
 These requests will not write data to the database but will print the results in the console.
 
-If you did include additional objects in the backend, you can send the request to
-http://0.0.0.0:8002/{case}/create_interview_shell_for with the body:
+If you did include additional objects in the backend, you can send a post request to
+http://0.0.0.0:8000/{case}/interviews with the body:
 ```
 {
 "first_name": {str},
@@ -137,6 +139,6 @@ Note that you will need to fill in the fields with the appropriate data, includi
 you created earlier.
 
 The transcription service may take several minutes to run but when it completes you will be able to use
-http://0.0.0.0:8002/interviews/{interview_id}/answers to get the results. 
+http://0.0.0.0:8000/interviews/{interview_id}/answers to get the results. 
 
 Each service can be run with docker locally to debug.  See the corresponding READMEs for more details. 
